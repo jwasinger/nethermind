@@ -418,6 +418,7 @@ namespace Nethermind.TxPool
                 }
             }
 
+            _hashCache.Delete(hash);
             _txStorage.Delete(hash);
             if (_logger.IsTrace) _logger.Trace($"Deleted a transaction: {hash}");
 
