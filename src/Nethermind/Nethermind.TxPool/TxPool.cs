@@ -149,7 +149,7 @@ namespace Nethermind.TxPool
             _ownTimer.Start();
         }
 
-        public uint FutureNonceRetention  => _txPoolConfig.FutureNonceRetention;
+        private uint FutureNonceRetention  => _txPoolConfig.FutureNonceRetention;
         
         internal long? BlockGasLimit { get; set; } = null;
 
@@ -181,9 +181,9 @@ namespace Nethermind.TxPool
         {
             BlockGasLimit = block.GasLimit;
             CurrentBaseFee = block.Header.BaseFeePerGas;
+            ReAddReorganisedTransactions(previousBlock);
             RemoveProcessedTransactions(block.Transactions);
             UpdateBuckets();
-            ReAddReorganisedTransactions(previousBlock);
         }
 
         private void ReAddReorganisedTransactions(Block? previousBlock)
