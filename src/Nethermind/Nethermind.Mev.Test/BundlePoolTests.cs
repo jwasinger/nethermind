@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Antlr4.Runtime.Misc;
 using Avro.File;
 using FluentAssertions;
 using FluentAssertions.Common;
@@ -196,7 +197,14 @@ namespace Nethermind.Mev.Test
         {
             // See if simulate gets any returns upon addition of new block to head
             TestContext testContext = new TestContext();
+            ITimestamper timestamper = new ManualTimestamper(DateTime.UnixEpoch.AddSeconds(1));
+            ISimulatedBundleSource bundleSource = testContext.BundlePool;
+            SemaphoreSlim ss = new SemaphoreSlim(1);
+            testContext.Simulator.When(t => t.Simulate(Arg.Any<MevBundle>(), Arg.Any<BlockHeader>())).Do(t=> ss.WaitAsync().Wait(TimeSpan.FromMilliseconds(10)));
+            testContext.Simulator.Simulate(Arg.Any<MevBundle>(), Arg.Any<BlockHeader>()).
+                Returns(SimulatedMevBundle.Cancelled(new MevBundle(1, new Transaction[]{}))).AndDoes(c => ss.Release());
             int head = 4;
+            
             testContext.BlockTree.NewHeadBlock += Raise.EventWith(new BlockEventArgs(Build.A.Block.WithNumber(head++).TestObject)); //4
             testContext.Simulator.Received(1).Simulate(Arg.Any<MevBundle>(), Arg.Any<BlockHeader>(), Arg.Any<CancellationToken>());
             testContext.BlockTree.NewHeadBlock += Raise.EventWith(new BlockEventArgs(Build.A.Block.WithNumber(head++).TestObject)); //5
