@@ -1,4 +1,4 @@
-﻿//  Copyright (c) 2021 Demerzel Solutions Limited
+//  Copyright (c) 2021 Demerzel Solutions Limited
 //  This file is part of the Nethermind library.
 // 
 //  The Nethermind library is free software: you can redistribute it and/or modify
@@ -72,5 +72,12 @@ namespace Nethermind.Db.Rocks.Config
         uint CanonicalHashTrieDbWriteBufferNumber { get; set; }
         ulong CanonicalHashTrieDbBlockCacheSize { get; set; }
         bool CanonicalHashTrieDbCacheIndexAndFilterBlocks { get; set; }
+
+        /// <summary>
+        /// Enables DB Statistics - https://github.com/facebook/rocksdb/wiki/Statistics
+        /// </summary>
+        bool EnableDbStatistics { get; set; }
+
+        bool EnableMetricsUpdater { get; set; }
     }
 }
