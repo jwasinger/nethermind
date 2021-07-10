@@ -530,7 +530,9 @@ namespace Nethermind.Synchronization.Peers
             ISyncPeer syncPeer = refreshTotalDiffTask.SyncPeer;
             if (_logger.IsTrace) _logger.Trace($"Requesting head block info from {syncPeer.Node:s}");
 
-	    _logger.Info($"requesting header {refreshTotalDiffTask.BlockHash ?? syncPeer.HeadHash}, best known block is {_blockTree.BestSuggestedHeader?.Hash == null ? "null" : _blockTree.BestSuggestedHeader?.Hash }");
+	    _logger.Info($"blocktree best known block number: {_blockTree.BestKnownNumber}");
+	    _logger.Info($"blocktree best suggested header hash: {_blockTree.BestSuggestedHeader?.Hash}");
+	    _logger.Info($"requesting header {refreshTotalDiffTask.BlockHash ?? syncPeer.HeadHash}, best known block is {(_blockTree.BestSuggestedHeader?.Hash == null ? "null" : _blockTree.BestSuggestedHeader?.Hash)}");
 
             Task<BlockHeader?> getHeadHeaderTask = syncPeer.GetHeadBlockHeader(refreshTotalDiffTask.BlockHash ?? syncPeer.HeadHash, token);
             CancellationTokenSource delaySource = new();
